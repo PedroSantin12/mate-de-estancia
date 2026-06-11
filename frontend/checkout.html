@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar compra | Mate de Estância</title>
+  <link rel="icon" href="/assets/images/logo-mate-estancia-emblema-transparente.png" type="image/png">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-top">
+    <a class="brand" href="/">
+      <span class="brand-mark"><img src="/assets/images/logo-mate-estancia-emblema-transparente.png" alt=""></span>
+      <span>Mate de Estância</span>
+    </a>
+    <div class="checkout-progress" aria-label="Progresso da compra">
+      <span class="done">Carrinho</span><span>Entrega</span><span>Confirmação</span>
+    </div>
+    <a class="cart-link" href="/carrinho">Voltar ao carrinho</a>
+  </div>
+</header>
+
+<main class="container checkout-page">
+  <section class="page-heading">
+    <p class="eyebrow">Última etapa</p>
+    <h1>Finalizar compra</h1>
+    <p>Preencha os dados para simular a confirmação do seu pedido.</p>
+  </section>
+
+  <form class="checkout-layout" id="checkout-form">
+    <div class="checkout-forms">
+      <section class="checkout-card">
+        <h2>Seus dados</h2>
+        <div class="form-grid">
+          <label class="full-field">Nome completo<input class="field" name="name" required></label>
+          <label>E-mail<input class="field" name="email" type="email" required></label>
+          <label>Telefone<input class="field" name="phone" required></label>
+        </div>
+      </section>
+
+      <section class="checkout-card">
+        <h2>Endereço de entrega</h2>
+        <div class="form-grid">
+          <label>CEP<input class="field" id="checkout-cep" name="cep" inputmode="numeric" maxlength="9" required></label>
+          <div class="cep-action"><button class="button button-brown" id="lookup-cep" type="button">Calcular frete</button></div>
+          <label class="full-field">Rua<input class="field" name="street" id="street" required></label>
+          <label>Número<input class="field" name="number" required></label>
+          <label>Complemento<input class="field" name="complement"></label>
+          <label>Bairro<input class="field" name="neighborhood" id="neighborhood" required></label>
+          <label>Cidade<input class="field" name="city" id="city" required></label>
+          <label>Estado<input class="field" name="state" id="state" maxlength="2" required></label>
+        </div>
+        <p id="cep-feedback" aria-live="polite"></p>
+      </section>
+
+      <section class="checkout-card">
+        <h2>Pagamento simulado</h2>
+        <div class="payment-options">
+          <label><input type="radio" name="paymentMethod" value="pix" checked> Pix</label>
+          <label><input type="radio" name="paymentMethod" value="credit-card"> Cartão de crédito</label>
+          <label><input type="radio" name="paymentMethod" value="boleto"> Boleto</label>
+        </div>
+      </section>
+    </div>
+
+    <aside class="cart-summary checkout-summary">
+      <h2>Resumo do pedido</h2>
+      <div id="checkout-items"></div>
+      <div class="summary-line"><span>Subtotal</span><strong id="checkout-subtotal">R$ 0,00</strong></div>
+      <div class="summary-line"><span>Frete</span><strong id="checkout-freight">Calcule pelo CEP</strong></div>
+      <div class="summary-line"><span>Desconto</span><strong id="checkout-discount">- R$ 0,00</strong></div>
+      <div class="summary-line summary-total"><span>Total</span><strong id="checkout-total">R$ 0,00</strong></div>
+      <button class="button checkout-button" id="finish-order" type="submit">Confirmar pedido</button>
+      <p class="checkout-note">Projeto acadêmico: nenhum pagamento real será processado.</p>
+    </aside>
+  </form>
+
+</main>
+
+<section class="order-success" id="order-success" role="dialog" aria-modal="true" aria-labelledby="order-success-title" hidden>
+  <div class="order-success-card" id="order-success-card"></div>
+</section>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/cartStorage.js"></script>
+<script src="/js/components.js"></script>
+<script src="/js/checkout.js"></script>
+</body>
+</html>

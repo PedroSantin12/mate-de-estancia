@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Administracao | Mate de Estancia</title><link rel="icon" href="/assets/images/logo-mate-estancia-emblema-transparente.png" type="image/png"><link rel="stylesheet" href="/css/styles.css"></head>
+<body>
+<header class="site-header"><div class="container header-top"><a class="brand" href="/"><span class="brand-mark"><img src="/assets/images/logo-mate-estancia-emblema-transparente.png" alt=""></span><span>Mate de Est&acirc;ncia</span></a><div class="profile-header-title">Painel administrativo</div><button class="button button-light" id="logout-button" type="button">Sair</button></div></header>
+<main class="container admin-page">
+  <section class="page-heading"><p class="eyebrow">Gest&atilde;o da loja</p><h1>Vis&atilde;o geral</h1><p>Produtos, estoque e clientes em um s&oacute; lugar.</p></section>
+  <nav class="admin-tabs" aria-label="Se&ccedil;&otilde;es administrativas"><button class="admin-tab active" type="button" data-admin-tab="catalog">Cat&aacute;logo e clientes</button><button class="admin-tab" type="button" data-admin-tab="sales">Vendas realizadas <span id="sales-tab-count">0</span></button></nav>
+  <div id="admin-catalog-panel">
+  <section class="admin-stats" id="admin-stats"></section>
+  <section class="admin-section checkout-card" id="product-form-section">
+    <div class="section-heading"><h2 id="admin-form-title">Cadastrar produto</h2><button class="button button-light admin-cancel-edit" id="cancel-product-edit" type="button" hidden>Cancelar edi&ccedil;&atilde;o</button></div>
+    <form class="form-grid" id="admin-product-form">
+      <input name="id" type="hidden">
+      <label>Nome<input class="field" name="name" required></label>
+      <label>Slug<input class="field" name="slug" placeholder="exemplo-produto" required></label>
+      <label class="full-field">Descri&ccedil;&atilde;o<input class="field" name="description" required></label>
+      <label>Categoria<select class="select" name="category" required><option value="ervas">Erva-mate</option><option value="cuias">Cuias</option><option value="bombas">Bombas</option><option value="termicas">T&eacute;rmicas</option><option value="kits">Kits</option></select></label>
+      <label>Pre&ccedil;o<input class="field" name="price" type="number" min="0.01" step="0.01" required></label>
+      <label>Estoque<input class="field" name="stock" type="number" min="0" required></label>
+      <label>Imagem<input class="field" name="image" value="/assets/images/erva-tradicional-real.jpg" required></label>
+      <button class="button button-brown" id="admin-product-submit" type="submit">Cadastrar produto</button>
+    </form>
+    <p id="admin-product-feedback" aria-live="polite"></p>
+  </section>
+  <section class="admin-section"><div class="section-heading"><h2>Produtos</h2><a href="/api-docs">Documenta&ccedil;&atilde;o da API</a></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Produto</th><th>Categoria</th><th>Pre&ccedil;o</th><th>Estoque</th><th>A&ccedil;&otilde;es</th></tr></thead><tbody id="admin-products"></tbody></table></div></section>
+  <section class="admin-section"><div class="section-heading"><h2>Clientes cadastrados</h2></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th></tr></thead><tbody id="admin-users"></tbody></table></div></section>
+  </div>
+  <div id="admin-sales-panel" hidden>
+    <section class="admin-stats sales-stats" id="sales-stats"></section>
+    <section class="admin-section"><div class="section-heading"><div><p class="eyebrow">Hist&oacute;rico comercial</p><h2>Pedidos vendidos</h2></div></div><div class="admin-sales-list" id="admin-sales-list"></div></section>
+  </div>
+</main>
+<script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/components.js"></script><script src="/js/admin.js"></script>
+</body></html>

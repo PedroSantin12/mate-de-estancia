@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produto | Mate de Estância</title>
+  <link rel="icon" href="/assets/images/logo-mate-estancia-emblema-transparente.png" type="image/png">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-top">
+    <a class="brand" href="/">
+      <span class="brand-mark"><img src="/assets/images/logo-mate-estancia-emblema-transparente.png" alt=""></span>
+      <span>Mate de Estância</span>
+    </a>
+
+    <form class="search-form" action="/busca" method="get">
+      <input type="search" name="query" placeholder="Buscar erva-mate, cuia, bomba..." aria-label="Buscar produtos">
+      <button type="submit">Buscar</button>
+    </form>
+
+    <a class="profile-link" href="/login"><span class="profile-icon" aria-hidden="true"></span><span data-profile-label>Perfil</span></a>
+    <a class="cart-link" href="/carrinho">Carrinho (<span data-cart-count>0</span>)</a>
+  </div>
+
+  <nav class="category-nav" aria-label="Categorias">
+    <ul class="category-list">
+      <li><a href="/">Início</a></li>
+      <li><a href="/busca?cat=ervas">Erva-mate</a></li>
+      <li><a href="/busca?cat=cuias">Cuias</a></li>
+      <li><a href="/busca?cat=bombas">Bombas</a></li>
+      <li><a href="/busca?cat=termicas">Térmicas</a></li>
+      <li><a href="/busca?cat=kits">Kits personalizados</a></li>
+    </ul>
+  </nav>
+</header>
+
+
+  <main class="container">
+    <section class="product-detail" id="product-detail">
+      <p class="status-message">Carregando produto...</p>
+    </section>
+  </main>
+
+
+<footer class="site-footer">
+  <div class="container">
+    <strong>Mate de Estância</strong>
+    <div>Projeto acadêmico de Programação Web.</div>
+  </div>
+</footer>
+
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/cartStorage.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/produto.js"></script>
+</body>
+</html>

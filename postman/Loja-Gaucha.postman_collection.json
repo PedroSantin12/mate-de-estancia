@@ -1,0 +1,175 @@
+{
+  "info": {
+    "_postman_id": "50e90715-2d0f-4ea1-97ea-bd2c9604b0fc",
+    "name": "Mate de Estância",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "productId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Pesquisar produtos",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/search?query=erva&page=1&limit=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "search"
+          ],
+          "query": [
+            {
+              "key": "query",
+              "value": "erva"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Detalhes do produto",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/product/{{productId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "{{productId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Criar produto - Basic Auth",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "troque_esta_senha",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Produto de teste\",\n  \"slug\": \"produto-de-teste\",\n  \"description\": \"Criado pelo Postman.\",\n  \"category\": \"kits\",\n  \"price\": 99.9,\n  \"image\": \"/assets/images/kit-essencial-real.jpg\",\n  \"stock\": 5,\n  \"attributes\": {\n    \"teste\": true\n  },\n  \"variants\": []\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Calcular carrinho",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"qty\": 2,\n      \"variantId\": \"500g\"\n    },\n    {\n      \"productId\": 3,\n      \"qty\": 1\n    }\n  ],\n  \"cupomCode\": \"URI10\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cart"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Excluir produto - Basic Auth",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "troque_esta_senha",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/product/{{productId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "product",
+            "{{productId}}"
+          ]
+        }
+      }
+    }
+  ]
+}

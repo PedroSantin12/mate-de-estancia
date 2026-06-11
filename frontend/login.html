@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar | Mate de Estância</title>
+  <link rel="icon" href="/assets/images/logo-mate-estancia-emblema-transparente.png" type="image/png">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <a class="auth-brand" href="/"><img src="/assets/images/logo-mate-estancia-emblema-transparente.png" alt=""><span>Mate de Estância</span></a>
+    <section class="auth-card">
+      <div class="auth-tabs">
+        <button class="active" type="button" data-auth-tab="login">Entrar</button>
+        <button type="button" data-auth-tab="register">Criar conta</button>
+      </div>
+      <form id="login-form" class="auth-form">
+        <div><p class="eyebrow">Bem-vindo de volta</p><h1>Entre na sua conta</h1><p>Seu carrinho e seus dados acompanham você.</p></div>
+        <label>E-mail<input class="field" name="email" type="email" required></label>
+        <label>Senha<input class="field" name="password" type="password" required></label>
+        <button class="button button-brown" type="submit">Entrar</button>
+      </form>
+      <form id="register-form" class="auth-form" hidden>
+        <div><p class="eyebrow">Primeiro mate</p><h1>Crie sua conta</h1><p>Cadastre-se para finalizar pedidos e salvar seu carrinho.</p></div>
+        <label>Nome completo<input class="field" name="name" required></label>
+        <label>E-mail<input class="field" name="email" type="email" required></label>
+        <label>Senha<input class="field" name="password" type="password" minlength="6" required></label>
+        <button class="button button-brown" type="submit">Criar conta</button>
+      </form>
+      <p class="auth-feedback" id="auth-feedback" aria-live="polite"></p>
+      <a class="auth-back" href="/">← Continuar navegando sem login</a>
+    </section>
+  </main>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cartStorage.js"></script><script src="/js/login.js"></script>
+</body>
+</html>

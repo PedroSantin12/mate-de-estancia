@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu perfil | Mate de Est&acirc;ncia</title>
+  <link rel="icon" href="/assets/images/logo-mate-estancia-emblema-transparente.png" type="image/png">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="container header-top"><a class="brand" href="/"><span class="brand-mark"><img src="/assets/images/logo-mate-estancia-emblema-transparente.png" alt=""></span><span>Mate de Est&acirc;ncia</span></a><div class="profile-header-title">Minha conta</div><a class="cart-link" href="/carrinho">Carrinho (<span data-cart-count>0</span>)</a></div></header>
+  <main class="container account-page">
+    <section class="page-heading"><p class="eyebrow">&Aacute;rea pessoal</p><h1>Ol&aacute;, <span id="profile-first-name">cliente</span>!</h1><p>Acompanhe seus dados, seu carrinho e as compras realizadas.</p></section>
+    <section class="account-dashboard">
+      <aside class="checkout-card account-details">
+        <div class="account-avatar" id="account-avatar">M</div>
+        <div><p class="account-label">Dados pessoais</p><h2 id="profile-name">Carregando...</h2></div>
+        <dl class="account-data">
+          <div><dt>Nome completo</dt><dd id="profile-full-name"></dd></div>
+          <div><dt>E-mail</dt><dd id="profile-email"></dd></div>
+        </dl>
+        <button class="button button-danger" type="button" id="logout-button">Sair da conta</button>
+      </aside>
+      <div class="account-content">
+        <article class="checkout-card account-cart">
+          <div><p class="account-label">Carrinho salvo</p><h2><span id="saved-cart-count">0</span> item(ns) esperando por voc&ecirc;</h2><p>Seu carrinho fica associado &agrave; conta e continua dispon&iacute;vel no pr&oacute;ximo acesso.</p></div>
+          <div class="account-actions"><a class="button" href="/carrinho">Abrir carrinho</a><a class="button button-brown" href="/busca">Continuar comprando</a></div>
+        </article>
+        <article class="checkout-card">
+          <div class="section-heading"><div><p class="account-label">Hist&oacute;rico</p><h2>Compras passadas</h2></div></div>
+          <div class="order-history" id="order-history"><p>Carregando pedidos...</p></div>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/components.js"></script><script src="/js/cartStorage.js"></script><script src="/js/perfil.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mate de Estância | Produtos para chimarrão</title>
+  <link rel="icon" href="/assets/images/logo-mate-estancia-emblema-transparente.png" type="image/png">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-top">
+    <a class="brand" href="/">
+      <span class="brand-mark"><img src="/assets/images/logo-mate-estancia-emblema-transparente.png" alt=""></span>
+      <span>Mate de Estância</span>
+    </a>
+
+    <form class="search-form" action="/busca" method="get">
+      <input type="search" name="query" placeholder="Buscar erva-mate, cuia, bomba..." aria-label="Buscar produtos">
+      <button type="submit">Buscar</button>
+    </form>
+
+    <a class="profile-link" href="/login"><span class="profile-icon" aria-hidden="true"></span><span data-profile-label>Perfil</span></a>
+    <a class="cart-link" href="/carrinho">Carrinho (<span data-cart-count>0</span>)</a>
+  </div>
+
+  <nav class="category-nav" aria-label="Categorias">
+    <ul class="category-list">
+      <li><a href="/">Início</a></li>
+      <li><a href="/busca?cat=ervas">Erva-mate</a></li>
+      <li><a href="/busca?cat=cuias">Cuias</a></li>
+      <li><a href="/busca?cat=bombas">Bombas</a></li>
+      <li><a href="/busca?cat=termicas">Térmicas</a></li>
+      <li><a href="/busca?cat=kits">Kits personalizados</a></li>
+    </ul>
+  </nav>
+</header>
+
+
+  <main>
+    <section class="hero">
+  <div class="container hero-content">
+    <p class="eyebrow">Mate de Estância</p>
+    <h1>Tradição gaúcha em cada mate.</h1>
+    <p>
+      Encontre erva-mate, cuias, bombas, térmicas e kits selecionados
+      para preparar o seu chimarrão do seu jeito.
+    </p>
+    <a class="button button-light" href="/busca">Conhecer produtos</a>
+  </div>
+</section>
+
+    <section class="benefits" aria-label="Vantagens da Mate de Estância">
+      <div class="container benefits-grid">
+        <article class="benefit-item">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7zM7 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+          </span>
+          <div>
+            <strong>Frete grátis</strong>
+            <p>Em compras a partir de R$ 200</p>
+          </div>
+        </article>
+        <article class="benefit-item">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="m12 3 8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4Zm-3 9 2 2 4-4"/></svg>
+          </span>
+          <div>
+            <strong>Compra segura</strong>
+            <p>Seus dados protegidos em cada etapa</p>
+          </div>
+        </article>
+        <article class="benefit-item">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-14v5l3 2"/></svg>
+          </span>
+          <div>
+            <strong>Envio rápido</strong>
+            <p>Seu pedido preparado com cuidado</p>
+          </div>
+        </article>
+        <article class="benefit-item">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5 20V10a7 7 0 0 1 14 0v10M5 14H3v5h4v-5H5Zm14 0h2v5h-4v-5h2Z"/></svg>
+          </span>
+          <div>
+            <strong>Atendimento próximo</strong>
+            <p>Ajuda para escolher o mate ideal</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Categorias</h2>
+        </div>
+
+        <div class="category-grid">
+          <a class="category-card" href="/busca?cat=ervas"><span class="category-icon">🌿</span><strong>Erva-mate</strong></a>
+          <a class="category-card" href="/busca?cat=cuias"><span class="category-icon">🧉</span><strong>Cuias</strong></a>
+          <a class="category-card" href="/busca?cat=bombas"><span class="category-icon">🥄</span><strong>Bombas</strong></a>
+          <a class="category-card" href="/busca?cat=termicas"><span class="category-icon">♨️</span><strong>Térmicas</strong></a>
+          <a class="category-card" href="/busca?cat=kits"><span class="category-icon">🎁</span><strong>Kits</strong></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Produtos em destaque</h2>
+          <a href="/busca">Ver catálogo completo</a>
+        </div>
+        <div class="product-grid" id="featured-products">
+          <p class="status-message">Carregando produtos...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+<footer class="site-footer">
+  <div class="container">
+    <strong>Mate de Estância</strong>
+    <div>Projeto acadêmico de Programação Web.</div>
+  </div>
+</footer>
+
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/cartStorage.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/home.js"></script>
+</body>
+</html>

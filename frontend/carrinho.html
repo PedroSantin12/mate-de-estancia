@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrinho | Mate de Estância</title>
+  <link rel="icon" href="/assets/images/logo-mate-estancia-emblema-transparente.png" type="image/png">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-top">
+    <a class="brand" href="/">
+      <span class="brand-mark"><img src="/assets/images/logo-mate-estancia-emblema-transparente.png" alt=""></span>
+      <span>Mate de Estância</span>
+    </a>
+
+    <form class="search-form" action="/busca" method="get">
+      <input type="search" name="query" placeholder="Buscar erva-mate, cuia, bomba..." aria-label="Buscar produtos">
+      <button type="submit">Buscar</button>
+    </form>
+
+    <a class="profile-link" href="/login"><span class="profile-icon" aria-hidden="true"></span><span data-profile-label>Perfil</span></a>
+    <a class="cart-link" href="/carrinho">Carrinho (<span data-cart-count>0</span>)</a>
+  </div>
+
+  <nav class="category-nav" aria-label="Categorias">
+    <ul class="category-list">
+      <li><a href="/">Início</a></li>
+      <li><a href="/busca?cat=ervas">Erva-mate</a></li>
+      <li><a href="/busca?cat=cuias">Cuias</a></li>
+      <li><a href="/busca?cat=bombas">Bombas</a></li>
+      <li><a href="/busca?cat=termicas">Térmicas</a></li>
+      <li><a href="/busca?cat=kits">Kits personalizados</a></li>
+    </ul>
+  </nav>
+</header>
+
+
+  <main class="container">
+    <section class="page-heading">
+      <p class="eyebrow">Sacola de compras</p>
+      <h1>Seu carrinho</h1>
+      <p>Os preços são consultados novamente na API antes do cálculo total.</p>
+    </section>
+
+    <section class="cart-layout">
+      <div class="cart-items" id="cart-items"></div>
+
+      <aside class="cart-summary">
+        <h2>Resumo</h2>
+
+        <form class="coupon-form" id="coupon-form">
+          <input class="field" id="coupon" type="text" placeholder="Cupom">
+          <button class="button" type="submit">Aplicar</button>
+        </form>
+
+        <form class="shipping-form" id="shipping-form">
+          <label for="cart-cep">Calcular frete por CEP</label>
+          <div>
+            <input class="field" id="cart-cep" inputmode="numeric" maxlength="9" placeholder="00000-000">
+            <button class="button button-brown" type="submit">Calcular</button>
+          </div>
+          <p id="shipping-feedback" aria-live="polite"></p>
+        </form>
+
+        <div class="summary-line"><span>Subtotal</span><strong id="subtotal">R$ 0,00</strong></div>
+        <div class="summary-line"><span>Frete</span><strong id="freight">R$ 0,00</strong></div>
+        <div class="summary-line"><span>Desconto</span><strong id="discount">- R$ 0,00</strong></div>
+        <div class="summary-line summary-total"><span>Total</span><strong id="total">R$ 0,00</strong></div>
+        <a class="button checkout-button" id="checkout-link" href="/checkout">Ir para finalização</a>
+      </aside>
+    </section>
+  </main>
+
+
+<footer class="site-footer">
+  <div class="container">
+    <strong>Mate de Estância</strong>
+    <div>Projeto acadêmico de Programação Web.</div>
+  </div>
+</footer>
+
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/cartStorage.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/carrinho.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Dependências instaladas pelo npm
+node_modules/
+backend/node_modules/
+
+# Dados sensíveis e configurações locais
+.env
+backend/.env
+
+# Arquivos temporários
+*.log
+.DS_Store
+Thumbs.db
+
+# Configurações locais de editores
+.vscode/
