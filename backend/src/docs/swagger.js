@@ -1,30 +1,71 @@
+const bearerSecurity = [{ bearerAuth: [] }];
+const basicSecurity = [{ basicAuth: [] }];
+
+const responses = {
+  unauthorized: { 401: { description: "Não autorizado" } },
+  forbidden: { 403: { description: "Acesso permitido somente para administradores" } },
+  notFound: { 404: { description: "Recurso não encontrado" } },
+  validation: { 400: { description: "Dados inválidos" } },
+};
+
 const swaggerDocument = {
   openapi: "3.0.0",
   info: {
     title: "Mate de Estância API",
     version: "1.0.0",
-    description: "API REST do trabalho individual de Programação Web.",
+    description: "Documentação da API REST do e-commerce Mate de Estância.",
   },
-  servers: [{ url: "http://localhost:3000" }],
+  servers: [{ url: "http://localhost:3000", description: "Servidor local" }],
+  tags: [
+    { name: "Sistema", description: "Funcionamento da API" },
+    { name: "Produtos", description: "Catálogo e pesquisa" },
+    { name: "Carrinho e compra", description: "Carrinho, frete e checkout" },
+    { name: "Autenticação", description: "Cadastro, login e perfil" },
+    { name: "Administração", description: "Operações exclusivas do administrador" },
+  ],
   components: {
     securitySchemes: {
-      basicAuth: {
-        type: "http",
-        scheme: "basic",
-      },
+      basicAuth: { type: "http", scheme: "basic" },
+      bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
     },
     schemas: {
-      ErrorResponse: {
+      ProductInput: {
+        type: "object",
+        required: ["name", "slug", "description", "category", "price", "image"],
+        properties: {
+          name: { type: "string", example: "Cuia de Porongo" },
+          slug: { type: "string", example: "cuia-de-porongo" },
+          description: { type: "string" },
+          category: { type: "string", example: "cuias" },
+          price: { type: "number", example: 59.9 },
+          image: { type: "string", example: "/assets/images/cuia-classica-real.jpg" },
+          stock: { type: "integer", example: 20 },
+          featured: { type: "boolean", example: false },
+        },
+      },
+      AuthInput: {
+        type: "object",
+        required: ["email", "password"],
+        properties: {
+          email: { type: "string", format: "email" },
+          password: { type: "string", format: "password" },
+        },
+      },
+      CartInput: {
         type: "object",
         properties: {
-          success: { type: "boolean", example: false },
-          error: {
-            type: "object",
-            properties: {
-              code: { type: "string", example: "PRODUCT_NOT_FOUND" },
-              message: { type: "string", example: "Produto não encontrado." },
+          items: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                productId: { type: "integer" },
+                variantId: { type: "string" },
+                qty: { type: "integer", minimum: 1 },
+              },
             },
           },
+          couponCode: { type: "string", example: "URI10" },
         },
       },
     },
@@ -32,49 +73,14 @@ const swaggerDocument = {
   paths: {
     "/health": {
       get: {
+        tags: ["Sistema"],
         summary: "Verifica o funcionamento da API",
-        responses: {
-          200: { description: "Serviço disponível" },
-        },
-      },
-    },
-    "/products": {
-      post: {
-        summary: "Cadastra um produto",
-        security: [{ basicAuth: [] }],
-        responses: {
-          201: { description: "Produto criado" },
-          400: { description: "Dados inválidos" },
-          401: { description: "Não autorizado" },
-        },
-      },
-    },
-    "/product/{id}": {
-      get: {
-        summary: "Consulta um produto por ID",
-        parameters: [
-          { name: "id", in: "path", required: true, schema: { type: "integer" } },
-        ],
-        responses: {
-          200: { description: "Produto encontrado" },
-          404: { description: "Produto não encontrado" },
-        },
-      },
-      delete: {
-        summary: "Remove um produto por ID",
-        security: [{ basicAuth: [] }],
-        parameters: [
-          { name: "id", in: "path", required: true, schema: { type: "integer" } },
-        ],
-        responses: {
-          200: { description: "Produto removido" },
-          401: { description: "Não autorizado" },
-          404: { description: "Produto não encontrado" },
-        },
+        responses: { 200: { description: "Serviço disponível" } },
       },
     },
     "/search": {
       get: {
+        tags: ["Produtos"],
         summary: "Lista e pesquisa produtos",
         parameters: [
           { name: "query", in: "query", schema: { type: "string" } },
@@ -82,54 +88,154 @@ const swaggerDocument = {
           { name: "page", in: "query", schema: { type: "integer", minimum: 1 } },
           { name: "limit", in: "query", schema: { type: "integer", minimum: 1, maximum: 50 } },
         ],
-        responses: {
-          200: { description: "Lista de produtos" },
-          400: { description: "Parâmetro inválido" },
-        },
+        responses: { 200: { description: "Lista de produtos" }, ...responses.validation },
+      },
+    },
+    "/product/{id}": {
+      get: {
+        tags: ["Produtos"],
+        summary: "Consulta um produto por ID",
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+        responses: { 200: { description: "Produto encontrado" }, ...responses.notFound },
+      },
+      delete: {
+        tags: ["Produtos"],
+        summary: "Remove um produto usando Basic Auth",
+        security: basicSecurity,
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+        responses: { 200: { description: "Produto removido" }, ...responses.unauthorized, ...responses.notFound },
+      },
+    },
+    "/products": {
+      post: {
+        tags: ["Produtos"],
+        summary: "Cadastra um produto usando Basic Auth",
+        security: basicSecurity,
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/ProductInput" } } } },
+        responses: { 201: { description: "Produto criado" }, ...responses.validation, ...responses.unauthorized },
       },
     },
     "/cart": {
       post: {
-        summary: "Calcula o resumo atualizado do carrinho",
-        responses: {
-          200: { description: "Resumo calculado" },
-          400: { description: "Carrinho inválido" },
-          404: { description: "Produto não encontrado" },
-        },
+        tags: ["Carrinho e compra"],
+        summary: "Recalcula valores do carrinho",
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/CartInput" } } } },
+        responses: { 200: { description: "Resumo calculado" }, ...responses.validation, ...responses.notFound },
       },
     },
     "/shipping": {
       post: {
+        tags: ["Carrinho e compra"],
         summary: "Consulta endereço e calcula frete por CEP",
-        responses: {
-          200: { description: "Frete calculado" },
-          400: { description: "CEP inválido" },
-          404: { description: "CEP não encontrado" },
-          503: { description: "Serviço de CEP indisponível" },
+        requestBody: {
+          required: true,
+          content: { "application/json": { schema: { type: "object", properties: { cep: { type: "string", example: "90010000" }, subtotal: { type: "number", example: 150 } } } } },
         },
+        responses: { 200: { description: "Frete calculado" }, ...responses.validation, ...responses.notFound },
       },
     },
     "/checkout": {
       post: {
-        summary: "Valida os dados e confirma um pedido simulado",
-        responses: {
-          201: { description: "Pedido confirmado" },
-          400: { description: "Dados inválidos" },
-        },
+        tags: ["Carrinho e compra"],
+        summary: "Finaliza e persiste um pedido",
+        security: bearerSecurity,
+        responses: { 201: { description: "Pedido confirmado" }, ...responses.validation, ...responses.unauthorized },
       },
     },
     "/auth/register": {
-      post: { summary: "Cadastra um cliente", responses: { 201: { description: "Cliente cadastrado" } } },
+      post: {
+        tags: ["Autenticação"],
+        summary: "Cadastra um cliente",
+        responses: { 201: { description: "Cliente cadastrado" }, ...responses.validation },
+      },
     },
     "/auth/login": {
-      post: { summary: "Autentica cliente ou administrador e retorna JWT", responses: { 200: { description: "Login realizado" } } },
+      post: {
+        tags: ["Autenticação"],
+        summary: "Autentica cliente ou administrador e retorna JWT",
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/AuthInput" } } } },
+        responses: { 200: { description: "Login realizado" }, ...responses.unauthorized },
+      },
     },
     "/auth/me": {
-      get: { summary: "Retorna o usuário autenticado", responses: { 200: { description: "Usuário autenticado" } } },
+      get: {
+        tags: ["Autenticação"],
+        summary: "Retorna o usuário autenticado",
+        security: bearerSecurity,
+        responses: { 200: { description: "Usuário autenticado" }, ...responses.unauthorized },
+      },
     },
     "/user/cart": {
-      get: { summary: "Retorna o carrinho persistido do usuário", responses: { 200: { description: "Carrinho retornado" } } },
-      put: { summary: "Persiste o carrinho do usuário", responses: { 200: { description: "Carrinho salvo" } } },
+      get: {
+        tags: ["Autenticação"],
+        summary: "Retorna o carrinho persistido",
+        security: bearerSecurity,
+        responses: { 200: { description: "Carrinho retornado" }, ...responses.unauthorized },
+      },
+      put: {
+        tags: ["Autenticação"],
+        summary: "Persiste o carrinho do usuário",
+        security: bearerSecurity,
+        responses: { 200: { description: "Carrinho salvo" }, ...responses.validation, ...responses.unauthorized },
+      },
+    },
+    "/user/orders": {
+      get: {
+        tags: ["Autenticação"],
+        summary: "Retorna o histórico de pedidos do usuário",
+        security: bearerSecurity,
+        responses: { 200: { description: "Pedidos retornados" }, ...responses.unauthorized },
+      },
+    },
+    "/admin-api/dashboard": {
+      get: {
+        tags: ["Administração"],
+        summary: "Retorna indicadores administrativos",
+        security: bearerSecurity,
+        responses: { 200: { description: "Indicadores retornados" }, ...responses.unauthorized, ...responses.forbidden },
+      },
+    },
+    "/admin-api/users": {
+      get: {
+        tags: ["Administração"],
+        summary: "Lista usuários cadastrados",
+        security: bearerSecurity,
+        responses: { 200: { description: "Usuários retornados" }, ...responses.unauthorized, ...responses.forbidden },
+      },
+    },
+    "/admin-api/orders": {
+      get: {
+        tags: ["Administração"],
+        summary: "Lista vendas e dados dos compradores",
+        security: bearerSecurity,
+        responses: { 200: { description: "Vendas retornadas" }, ...responses.unauthorized, ...responses.forbidden },
+      },
+    },
+    "/admin-api/products": {
+      post: {
+        tags: ["Administração"],
+        summary: "Cadastra produto pelo painel administrativo",
+        security: bearerSecurity,
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/ProductInput" } } } },
+        responses: { 201: { description: "Produto criado" }, ...responses.validation, ...responses.unauthorized, ...responses.forbidden },
+      },
+    },
+    "/admin-api/product/{id}": {
+      put: {
+        tags: ["Administração"],
+        summary: "Atualiza um produto",
+        security: bearerSecurity,
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/ProductInput" } } } },
+        responses: { 200: { description: "Produto atualizado" }, ...responses.validation, ...responses.unauthorized, ...responses.forbidden, ...responses.notFound },
+      },
+      delete: {
+        tags: ["Administração"],
+        summary: "Exclui um produto",
+        security: bearerSecurity,
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+        responses: { 200: { description: "Produto excluído" }, ...responses.unauthorized, ...responses.forbidden, ...responses.notFound },
+      },
     },
   },
 };

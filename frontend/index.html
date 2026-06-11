@@ -10,7 +10,7 @@
 <body>
 
 <header class="site-header">
-  <div class="container header-top">
+  <div class="container header-top public-header-top">
     <a class="brand" href="/">
       <span class="brand-mark"><img src="/assets/images/logo-mate-estancia-emblema-transparente.png" alt=""></span>
       <span>Mate de Estância</span>
@@ -21,8 +21,10 @@
       <button type="submit">Buscar</button>
     </form>
 
-    <a class="profile-link" href="/login"><span class="profile-icon" aria-hidden="true"></span><span data-profile-label>Perfil</span></a>
-    <a class="cart-link" href="/carrinho">Carrinho (<span data-cart-count>0</span>)</a>
+    <div class="header-actions">
+      <a class="profile-link" href="/login"><span class="profile-icon" aria-hidden="true"></span><span data-profile-label>Perfil</span></a>
+      <a class="cart-link" href="/carrinho">Carrinho (<span data-cart-count>0</span>)</a>
+    </div>
   </div>
 
   <nav class="category-nav" aria-label="Categorias">
