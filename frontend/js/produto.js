@@ -1,5 +1,6 @@
 let product = null;
 let productReviews = [];
+let reviewableProductIds = [];
 let selectedVariantId = null;
 
 document.addEventListener("DOMContentLoaded", loadProduct);
@@ -22,6 +23,9 @@ async function loadProduct() {
     const reviewData = await apiRequest(`/product/${productId}/reviews`);
     productReviews = reviewData.items || [];
     product.reviewSummary = reviewData.summary || product.reviewSummary;
+    if (getAuthUser()) {
+      reviewableProductIds = await apiRequest("/user/reviewable-products");
+    }
     renderProduct();
   } catch (error) {
     container.innerHTML = `<p class="status-message error-message">${error.message}</p>`;
@@ -114,6 +118,7 @@ function renderProduct() {
 
 function renderReviewsPanel() {
   const user = getAuthUser();
+  const canReview = user && reviewableProductIds.includes(Number(product.id));
   const { rating, reviews } = getProductRating(product);
   const summary = reviews
     ? `<p class="review-summary"><strong>${rating}</strong> de 5 com ${reviews} avaliação${reviews === 1 ? "" : "es"}.</p>`
@@ -125,11 +130,23 @@ function renderReviewsPanel() {
       <h2>Opinião dos clientes</h2>
       ${summary}
     </div>
-    ${user ? renderReviewForm() : `<p class="status-message">Faça login para avaliar este produto. <a href="/login">Entrar ou criar conta</a></p>`}
+    ${renderReviewAccessMessage(user, canReview)}
     <div class="review-list">
       ${productReviews.length ? productReviews.map(renderReviewItem).join("") : `<p class="status-message">Nenhum comentário publicado ainda.</p>`}
     </div>
   `;
+}
+
+function renderReviewAccessMessage(user, canReview) {
+  if (!user) {
+    return `<p class="status-message">Faça login para avaliar este produto. <a href="/login">Entrar ou criar conta</a></p>`;
+  }
+
+  if (!canReview) {
+    return `<p class="status-message">Você pode ler as avaliações, mas só poderá comentar depois de comprar este produto.</p>`;
+  }
+
+  return renderReviewForm();
 }
 
 function renderReviewForm() {

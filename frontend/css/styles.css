@@ -522,6 +522,25 @@ button {
   color: var(--white);
 }
 
+.favorite-login-message {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 20;
+  max-width: 340px;
+  border-radius: 14px;
+  padding: 14px 18px;
+  background: var(--green-900);
+  color: var(--white);
+  box-shadow: var(--shadow);
+  font-weight: 700;
+}
+
+.favorite-login-message a {
+  color: var(--cream-100);
+  text-decoration: underline;
+}
+
 .buy-row .favorite-button {
   position: static;
   flex: 0 0 44px;
@@ -1394,6 +1413,7 @@ button {
 }
 
 #admin-sales-panel[hidden],
+#admin-reviews-panel[hidden],
 #admin-catalog-panel[hidden] {
   display: none;
 }
@@ -1438,6 +1458,44 @@ button {
 .admin-sales-list {
   display: grid;
   gap: 14px;
+}
+
+.admin-reviews-list {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-review-card {
+  display: grid;
+  gap: 10px;
+  border-radius: var(--radius);
+  padding: 18px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.admin-review-card > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-review-card > div span {
+  color: var(--brown-700);
+  font-weight: 800;
+}
+
+.admin-review-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.admin-review-card small {
+  color: var(--muted);
+}
+
+.admin-review-card .danger-action {
+  justify-self: start;
 }
 
 .admin-sale-card {

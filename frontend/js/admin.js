@@ -1,7 +1,17 @@
 let adminProducts = [];
 let adminOrders = [];
+let adminReviews = [];
 
 const ORDER_STATUSES = ["Pedido confirmado", "Em preparo", "Enviado", "Entregue", "Cancelado"];
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#logout-button").addEventListener("click", logout);
@@ -17,20 +27,23 @@ async function loadAdmin() {
   if (user.role !== "admin") return location.href = "/perfil";
 
   try {
-    const [stats, products, users, orders] = await Promise.all([
+    const [stats, products, users, orders, reviews] = await Promise.all([
       apiRequest("/admin-api/dashboard"),
       apiRequest("/search?limit=50"),
       apiRequest("/admin-api/users"),
       apiRequest("/admin-api/orders"),
+      apiRequest("/admin-api/reviews"),
     ]);
 
     adminProducts = products.items;
     adminOrders = orders;
+    adminReviews = reviews;
     document.querySelector("#admin-stats").innerHTML = [["Produtos", stats.products], ["Clientes", stats.users], ["Estoque baixo", stats.lowStock]]
       .map(([label, value]) => `<article><strong>${value}</strong><span>${label}</span></article>`)
       .join("");
     renderProducts();
     renderOrders();
+    renderReviews();
     document.querySelector("#admin-users").innerHTML = users.map((item) => `<tr><td>${item.name}</td><td>${item.email}</td><td>${item.role}</td></tr>`).join("");
   } catch (error) {
     document.querySelector("#admin-stats").innerHTML = `<p class="status-message error-message">${error.message}</p>`;
@@ -40,6 +53,7 @@ async function loadAdmin() {
 function switchAdminTab(tab) {
   document.querySelector("#admin-catalog-panel").hidden = tab !== "catalog";
   document.querySelector("#admin-sales-panel").hidden = tab !== "sales";
+  document.querySelector("#admin-reviews-panel").hidden = tab !== "reviews";
   document.querySelectorAll("[data-admin-tab]").forEach((button) => button.classList.toggle("active", button.dataset.adminTab === tab));
 }
 
@@ -76,6 +90,37 @@ function renderOrders() {
   }).join("");
 
   document.querySelectorAll("[data-order-status]").forEach((select) => select.addEventListener("change", updateOrderStatus));
+}
+
+function renderReviews() {
+  document.querySelector("#reviews-tab-count").textContent = adminReviews.length;
+  const list = document.querySelector("#admin-reviews-list");
+
+  if (!adminReviews.length) {
+    list.innerHTML = `<article class="checkout-card empty-orders"><strong>Nenhuma avaliação publicada ainda.</strong><p>As avaliações reais dos clientes aparecerão aqui.</p></article>`;
+    return;
+  }
+
+  list.innerHTML = adminReviews.map((review) => `
+    <article class="admin-review-card">
+      <div>
+        <strong>${escapeHtml(review.productName)}</strong>
+        <span>${renderStars(review.rating)} ${Number(review.rating).toFixed(1)}</span>
+      </div>
+      <p>${escapeHtml(review.comment)}</p>
+      <small>${escapeHtml(review.customerName)} · ${escapeHtml(review.customerEmail)} · ${new Date(review.createdAt).toLocaleString("pt-BR")}</small>
+      <button class="icon-button danger-action" type="button" data-delete-review="${review.id}">Excluir avaliação</button>
+    </article>
+  `).join("");
+
+  document.querySelectorAll("[data-delete-review]").forEach((button) => button.addEventListener("click", () => deleteReview(button)));
+}
+
+async function deleteReview(button) {
+  if (!confirm("Excluir esta avaliação? Use apenas quando houver conteúdo inadequado ou erro evidente.")) return;
+  await apiRequest(`/admin-api/review/${button.dataset.deleteReview}`, { method: "DELETE" });
+  adminReviews = adminReviews.filter((review) => Number(review.id) !== Number(button.dataset.deleteReview));
+  renderReviews();
 }
 
 async function updateOrderStatus(event) {

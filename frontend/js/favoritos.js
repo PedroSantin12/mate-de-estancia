@@ -2,14 +2,21 @@ document.addEventListener("DOMContentLoaded", loadFavoriteProducts);
 
 async function loadFavoriteProducts() {
   const container = document.querySelector("#favorite-products");
-  const ids = getFavoriteIds();
+  const user = getAuthUser();
 
-  if (!ids.length) {
-    container.innerHTML = `<div class="status-message favorites-empty"><strong>Nenhum favorito ainda.</strong><p>Use o coração nos produtos para montar sua lista de desejos.</p><a class="button button-brown" href="/busca">Ver catálogo</a></div>`;
+  if (!user) {
+    container.innerHTML = `<div class="status-message favorites-empty"><strong>Entre para ver seus favoritos.</strong><p>Seus produtos favoritos ficam salvos na sua conta, não apenas neste navegador.</p><a class="button button-brown" href="/login?next=/favoritos">Fazer login</a></div>`;
     return;
   }
 
   try {
+    const ids = await loadUserFavorites();
+
+    if (!ids.length) {
+      container.innerHTML = `<div class="status-message favorites-empty"><strong>Nenhum favorito ainda.</strong><p>Use o coração nos produtos para montar sua lista de desejos.</p><a class="button button-brown" href="/busca">Ver catálogo</a></div>`;
+      return;
+    }
+
     const data = await apiRequest("/search?limit=50");
     const products = data.items.filter((product) => ids.includes(Number(product.id)));
 

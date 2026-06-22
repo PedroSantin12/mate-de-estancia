@@ -204,6 +204,29 @@ const swaggerDocument = {
         responses: { 200: { description: "Carrinho salvo" }, ...responses.validation, ...responses.unauthorized },
       },
     },
+    "/user/favorites": {
+      get: {
+        tags: ["Autenticação"],
+        summary: "Retorna os produtos favoritos do usuário",
+        security: bearerSecurity,
+        responses: { 200: { description: "Favoritos retornados" }, ...responses.unauthorized },
+      },
+      put: {
+        tags: ["Autenticação"],
+        summary: "Persiste os produtos favoritos do usuário",
+        security: bearerSecurity,
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { items: { type: "array", items: { type: "integer" } } } } } } },
+        responses: { 200: { description: "Favoritos salvos" }, ...responses.validation, ...responses.unauthorized },
+      },
+    },
+    "/user/reviewable-products": {
+      get: {
+        tags: ["Autenticação"],
+        summary: "Lista produtos comprados que podem ser avaliados",
+        security: bearerSecurity,
+        responses: { 200: { description: "IDs de produtos retornados" }, ...responses.unauthorized },
+      },
+    },
     "/user/orders": {
       get: {
         tags: ["Autenticação"],
@@ -234,6 +257,23 @@ const swaggerDocument = {
         summary: "Lista vendas e dados dos compradores",
         security: bearerSecurity,
         responses: { 200: { description: "Vendas retornadas" }, ...responses.unauthorized, ...responses.forbidden },
+      },
+    },
+    "/admin-api/reviews": {
+      get: {
+        tags: ["Administração"],
+        summary: "Lista avaliações publicadas pelos clientes",
+        security: bearerSecurity,
+        responses: { 200: { description: "Avaliações retornadas" }, ...responses.unauthorized, ...responses.forbidden },
+      },
+    },
+    "/admin-api/review/{id}": {
+      delete: {
+        tags: ["Administração"],
+        summary: "Exclui uma avaliação inadequada",
+        security: bearerSecurity,
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+        responses: { 200: { description: "Avaliação excluída" }, ...responses.unauthorized, ...responses.forbidden, ...responses.notFound },
       },
     },
     "/admin-api/order/{id}/status": {

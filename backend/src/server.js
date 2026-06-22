@@ -12,6 +12,15 @@ async function startServer() {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
+    const userColumns = await sequelize.getQueryInterface().describeTable("users");
+    if (!userColumns.favorites) {
+      await sequelize.getQueryInterface().addColumn("users", "favorites", {
+        type: require("sequelize").DataTypes.JSONB,
+        allowNull: false,
+        defaultValue: [],
+      });
+    }
+
     const orderColumns = await sequelize.getQueryInterface().describeTable("orders");
     if (!orderColumns.customer) {
       await sequelize.getQueryInterface().addColumn("orders", "customer", {

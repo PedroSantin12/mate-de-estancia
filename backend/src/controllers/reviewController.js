@@ -2,6 +2,7 @@ const { fn, col } = require("sequelize");
 const Product = require("../models/Product");
 const Review = require("../models/Review");
 const User = require("../models/User");
+const Order = require("../models/Order");
 const AppError = require("../utils/AppError");
 
 function normalizeReview(review, usersById) {
@@ -48,6 +49,18 @@ async function getReviewSummary(productIds) {
   );
 }
 
+async function userPurchasedProduct(userId, productId) {
+  const orders = await Order.findAll({
+    where: { userId },
+    attributes: ["summary"],
+  });
+
+  return orders.some((order) => {
+    const items = Array.isArray(order.summary?.items) ? order.summary.items : [];
+    return items.some((item) => Number(item.productId) === Number(productId));
+  });
+}
+
 async function listProductReviews(req, res, next) {
   try {
     const product = await Product.findByPk(req.params.id);
@@ -77,6 +90,10 @@ async function saveProductReview(req, res, next) {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product) throw new AppError("Produto não encontrado.", 404, "PRODUCT_NOT_FOUND");
+    const hasPurchased = await userPurchasedProduct(req.user.id, product.id);
+    if (!hasPurchased) {
+      throw new AppError("Você só pode avaliar produtos que já comprou.", 403, "PURCHASE_REQUIRED");
+    }
 
     const rating = Number(req.body.rating);
     const comment = String(req.body.comment || "").trim();
@@ -112,4 +129,5 @@ module.exports = {
   getReviewSummary,
   listProductReviews,
   saveProductReview,
+  userPurchasedProduct,
 };

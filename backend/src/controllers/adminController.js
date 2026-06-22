@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
+const Review = require("../models/Review");
 const AppError = require("../utils/AppError");
 const { publicUser } = require("./authController");
 
@@ -62,4 +63,47 @@ async function updateOrderStatus(req, res, next) {
   } catch (error) { return next(error); }
 }
 
-module.exports = { dashboard, listUsers, listOrders, updateOrderStatus, removeProduct };
+async function listReviews(_req, res, next) {
+  try {
+    const [reviews, users, products] = await Promise.all([
+      Review.findAll({ order: [["createdAt", "DESC"]] }),
+      User.findAll(),
+      Product.findAll(),
+    ]);
+    const usersById = new Map(users.map((user) => [Number(user.id), publicUser(user)]));
+    const productsById = new Map(products.map((product) => [Number(product.id), product]));
+
+    const data = reviews.map((review) => {
+      const item = review.toJSON();
+      const user = usersById.get(Number(item.userId));
+      const product = productsById.get(Number(item.productId));
+      return {
+        ...item,
+        customerName: user?.name || "Cliente",
+        customerEmail: user?.email || "E-mail não informado",
+        productName: product?.name || "Produto removido",
+      };
+    });
+
+    return res.json({ success: true, data });
+  } catch (error) { return next(error); }
+}
+
+async function removeReview(req, res, next) {
+  try {
+    const review = await Review.findByPk(req.params.id);
+    if (!review) throw new AppError("Avaliação não encontrada.", 404, "REVIEW_NOT_FOUND");
+    await review.destroy();
+    return res.json({ success: true, data: { id: Number(req.params.id) } });
+  } catch (error) { return next(error); }
+}
+
+module.exports = {
+  dashboard,
+  listUsers,
+  listOrders,
+  listReviews,
+  removeReview,
+  updateOrderStatus,
+  removeProduct,
+};

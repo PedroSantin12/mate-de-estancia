@@ -10,6 +10,7 @@ const User = sequelize.define(
     passwordHash: { type: DataTypes.TEXT, allowNull: false },
     role: { type: DataTypes.ENUM("customer", "admin"), allowNull: false, defaultValue: "customer" },
     cart: { type: DataTypes.JSONB, allowNull: false, defaultValue: [] },
+    favorites: { type: DataTypes.JSONB, allowNull: false, defaultValue: [] },
   },
   { tableName: "users", timestamps: true }
 );

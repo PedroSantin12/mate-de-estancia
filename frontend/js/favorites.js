@@ -1,25 +1,77 @@
-const FAVORITES_KEY = "mate-favorites";
+let favoriteIdsCache = [];
+let favoritesLoaded = false;
 
 function getFavoriteIds() {
-  try {
-    const ids = JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]");
-    return Array.isArray(ids) ? ids.map(Number).filter(Boolean) : [];
-  } catch (_error) {
-    return [];
-  }
+  return favoriteIdsCache;
 }
 
 function isFavorite(productId) {
-  return getFavoriteIds().includes(Number(productId));
+  return favoriteIdsCache.includes(Number(productId));
 }
 
-function toggleFavorite(productId) {
-  const id = Number(productId);
-  const ids = getFavoriteIds();
-  const nextIds = ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id];
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(nextIds));
+function showFavoriteLoginMessage() {
+  const existing = document.querySelector(".favorite-login-message");
+  if (existing) existing.remove();
+
+  const message = document.createElement("div");
+  message.className = "favorite-login-message";
+  message.innerHTML = `Faça login para salvar favoritos na sua conta. <a href="/login">Entrar</a>`;
+  document.body.appendChild(message);
+  setTimeout(() => message.remove(), 4200);
+}
+
+async function loadUserFavorites() {
+  const user = getAuthUser();
+  if (!user) {
+    favoriteIdsCache = [];
+    favoritesLoaded = true;
+    refreshFavoriteButtons();
+    return favoriteIdsCache;
+  }
+
+  try {
+    favoriteIdsCache = await apiRequest("/user/favorites");
+  } catch (_error) {
+    favoriteIdsCache = [];
+  }
+
+  favoritesLoaded = true;
   refreshFavoriteButtons();
-  return nextIds.includes(id);
+  return favoriteIdsCache;
+}
+
+async function saveUserFavorites() {
+  if (!getAuthUser()) return favoriteIdsCache;
+  favoriteIdsCache = await apiRequest("/user/favorites", {
+    method: "PUT",
+    body: JSON.stringify({ items: favoriteIdsCache }),
+  });
+  return favoriteIdsCache;
+}
+
+async function toggleFavorite(productId) {
+  if (!getAuthUser()) {
+    showFavoriteLoginMessage();
+    return false;
+  }
+
+  if (!favoritesLoaded) await loadUserFavorites();
+
+  const id = Number(productId);
+  favoriteIdsCache = favoriteIdsCache.includes(id)
+    ? favoriteIdsCache.filter((item) => item !== id)
+    : [...favoriteIdsCache, id];
+
+  refreshFavoriteButtons();
+
+  try {
+    await saveUserFavorites();
+  } catch (error) {
+    showFavoriteLoginMessage();
+  }
+
+  refreshFavoriteButtons();
+  return favoriteIdsCache.includes(id);
 }
 
 function refreshFavoriteButtons() {
@@ -33,10 +85,10 @@ function refreshFavoriteButtons() {
 
 function bindFavoriteButtons(scope = document) {
   scope.querySelectorAll("[data-favorite-id]").forEach((button) => {
-    button.addEventListener("click", (event) => {
+    button.addEventListener("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
-      toggleFavorite(button.dataset.favoriteId);
+      await toggleFavorite(button.dataset.favoriteId);
     });
   });
   refreshFavoriteButtons();
@@ -44,6 +96,8 @@ function bindFavoriteButtons(scope = document) {
 
 window.getFavoriteIds = getFavoriteIds;
 window.isFavorite = isFavorite;
+window.loadUserFavorites = loadUserFavorites;
 window.toggleFavorite = toggleFavorite;
 window.bindFavoriteButtons = bindFavoriteButtons;
 window.refreshFavoriteButtons = refreshFavoriteButtons;
+document.addEventListener("DOMContentLoaded", loadUserFavorites);

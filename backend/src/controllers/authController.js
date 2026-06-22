@@ -7,6 +7,11 @@ function publicUser(user) {
   return { id: user.id, name: user.name, email: user.email, role: user.role };
 }
 
+function normalizeFavoriteIds(items) {
+  if (!Array.isArray(items)) return [];
+  return [...new Set(items.map(Number).filter((id) => Number.isInteger(id) && id > 0))];
+}
+
 async function register(req, res, next) {
   try {
     const name = String(req.body.name || "").trim();
@@ -49,6 +54,19 @@ async function saveUserCart(req, res, next) {
   } catch (error) { return next(error); }
 }
 
+async function getUserFavorites(req, res) {
+  return res.json({ success: true, data: normalizeFavoriteIds(req.user.favorites) });
+}
+
+async function saveUserFavorites(req, res, next) {
+  try {
+    if (!Array.isArray(req.body.items)) throw new AppError("Favoritos inválidos.", 400, "VALIDATION_ERROR");
+    req.user.favorites = normalizeFavoriteIds(req.body.items);
+    await req.user.save();
+    return res.json({ success: true, data: req.user.favorites });
+  } catch (error) { return next(error); }
+}
+
 async function getUserOrders(req, res, next) {
   try {
     const orders = await Order.findAll({
@@ -59,4 +77,35 @@ async function getUserOrders(req, res, next) {
   } catch (error) { return next(error); }
 }
 
-module.exports = { register, login, me, getUserCart, saveUserCart, getUserOrders, publicUser };
+async function getUserReviewableProducts(req, res, next) {
+  try {
+    const orders = await Order.findAll({
+      where: { userId: req.user.id },
+      attributes: ["summary"],
+    });
+    const productIds = new Set();
+
+    orders.forEach((order) => {
+      const items = Array.isArray(order.summary?.items) ? order.summary.items : [];
+      items.forEach((item) => {
+        const productId = Number(item.productId);
+        if (Number.isInteger(productId) && productId > 0) productIds.add(productId);
+      });
+    });
+
+    return res.json({ success: true, data: [...productIds] });
+  } catch (error) { return next(error); }
+}
+
+module.exports = {
+  register,
+  login,
+  me,
+  getUserCart,
+  saveUserCart,
+  getUserFavorites,
+  saveUserFavorites,
+  getUserOrders,
+  getUserReviewableProducts,
+  publicUser,
+};
