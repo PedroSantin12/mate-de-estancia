@@ -17,6 +17,7 @@ async function loadProduct() {
 
 function renderProduct() {
   const variants = Array.isArray(product.variants) ? product.variants : [];
+  const badges = getProductBadges(product);
 
   if (variants.length) {
     selectedVariantId = variants[0].id;
@@ -26,9 +27,11 @@ function renderProduct() {
     <div>
       <img src="${product.image}" alt="${product.name}">
     </div>
-    <div>
+    <div class="product-detail-info">
       <p class="product-category">${product.category}</p>
       <h1>${product.name}</h1>
+      <div class="detail-badges">${badges.map((badge) => `<span class="product-badge badge-${badge.toLowerCase().replace(/\s+/g, "-")}">${badge}</span>`).join("")}</div>
+      ${renderRating(product)}
       <div class="price" id="product-price">${formatPrice(getSelectedPrice())}</div>
       <p>${product.description}</p>
 
@@ -70,6 +73,7 @@ function renderProduct() {
         <button class="button button-brown" id="add-to-cart" type="button">
           Adicionar ao carrinho
         </button>
+        ${renderFavoriteButton(product)}
       </div>
       <p id="feedback" aria-live="polite"></p>
     </div>
@@ -88,6 +92,7 @@ function renderProduct() {
   });
 
   document.querySelector("#add-to-cart").addEventListener("click", addCurrentProductToCart);
+  bindFavoriteButtons(document.querySelector("#product-detail"));
 }
 
 function getSelectedPrice() {

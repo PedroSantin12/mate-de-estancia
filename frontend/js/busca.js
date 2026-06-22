@@ -47,6 +47,7 @@ async function loadProducts() {
     }
 
     container.innerHTML = data.items.map(renderProductCard).join("");
+    bindFavoriteButtons(container);
   } catch (error) {
     container.innerHTML = `<p class="status-message error-message">${error.message}</p>`;
   }
