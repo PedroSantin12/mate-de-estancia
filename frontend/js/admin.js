@@ -1,6 +1,7 @@
 let adminProducts = [];
 let adminOrders = [];
 let adminReviews = [];
+let adminUsers = [];
 let adminStats = null;
 
 const ORDER_STATUSES = ["Pedido confirmado", "Em preparo", "Enviado", "Entregue", "Cancelado"];
@@ -12,12 +13,6 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-}
-
-function readJsonField(form, field, fallback) {
-  const value = String(form.elements[field].value || "").trim();
-  if (!value) return fallback;
-  return JSON.parse(value);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -44,25 +39,31 @@ async function loadAdmin() {
 
     adminStats = stats;
     adminProducts = products.items;
+    adminUsers = users;
     adminOrders = orders;
     adminReviews = reviews;
 
     renderDashboard();
+    renderUsers();
     renderProducts();
     renderStock();
     renderOrders();
     renderReviews();
-    document.querySelector("#admin-users").innerHTML = users.map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.email)}</td><td>${escapeHtml(item.role)}</td></tr>`).join("");
   } catch (error) {
     document.querySelector("#admin-stats").innerHTML = `<p class="status-message error-message">${error.message}</p>`;
   }
 }
 
 function switchAdminTab(tab) {
-  ["dashboard", "catalog", "stock", "sales", "reviews"].forEach((name) => {
+  ["dashboard", "catalog", "customers", "stock", "sales", "reviews"].forEach((name) => {
     document.querySelector(`#admin-${name}-panel`).hidden = tab !== name;
   });
   document.querySelectorAll("[data-admin-tab]").forEach((button) => button.classList.toggle("active", button.dataset.adminTab === tab));
+}
+
+function renderUsers() {
+  document.querySelector("#customers-tab-count").textContent = adminUsers.length;
+  document.querySelector("#admin-users").innerHTML = adminUsers.map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.email)}</td><td>${escapeHtml(item.role)}</td></tr>`).join("");
 }
 
 function renderDashboard() {
@@ -216,9 +217,6 @@ function editProduct(id) {
   ["id", "name", "slug", "description", "category", "price", "stock", "image"].forEach((field) => {
     form.elements[field].value = product[field];
   });
-  form.elements.featured.checked = Boolean(product.featured);
-  form.elements.attributes.value = JSON.stringify(product.attributes || {}, null, 2);
-  form.elements.variants.value = JSON.stringify(product.variants || [], null, 2);
   document.querySelector("#admin-form-title").textContent = `Editando: ${product.name}`;
   document.querySelector("#admin-product-submit").textContent = "Salvar alterações";
   document.querySelector("#cancel-product-edit").hidden = false;
@@ -230,8 +228,6 @@ function resetProductForm() {
   const form = document.querySelector("#admin-product-form");
   form.reset();
   form.elements.id.value = "";
-  form.elements.attributes.value = "";
-  form.elements.variants.value = "";
   document.querySelector("#admin-form-title").textContent = "Cadastrar produto";
   document.querySelector("#admin-product-submit").textContent = "Cadastrar produto";
   document.querySelector("#cancel-product-edit").hidden = true;
@@ -256,11 +252,12 @@ async function saveProduct(event) {
   feedback.textContent = id ? "Salvando alterações..." : "Cadastrando...";
 
   try {
+    const currentProduct = id ? adminProducts.find((product) => Number(product.id) === Number(id)) : null;
     const payload = {
       ...values,
-      featured: form.elements.featured.checked,
-      attributes: readJsonField(form, "attributes", {}),
-      variants: readJsonField(form, "variants", []),
+      featured: currentProduct ? Boolean(currentProduct.featured) : false,
+      attributes: currentProduct?.attributes || {},
+      variants: currentProduct?.variants || [],
     };
     const product = await apiRequest(id ? `/admin-api/product/${id}` : "/admin-api/products", {
       method: id ? "PUT" : "POST",

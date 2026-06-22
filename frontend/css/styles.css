@@ -1441,6 +1441,7 @@ button {
 #admin-reviews-panel[hidden],
 #admin-stock-panel[hidden],
 #admin-dashboard-panel[hidden],
+#admin-customers-panel[hidden],
 #admin-catalog-panel[hidden] {
   display: none;
 }
@@ -1488,18 +1489,6 @@ button {
 
 .chart-row strong {
   color: var(--brown-700);
-}
-
-.admin-checkbox-field {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  min-height: 44px;
-  border: 1px solid var(--cream-300);
-  border-radius: 10px;
-  padding: 10px 12px;
-  background: var(--white);
-  font-weight: 700;
 }
 
 .admin-table-wrap {
