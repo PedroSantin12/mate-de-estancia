@@ -1,6 +1,13 @@
 const { Op, cast, col, where: sequelizeWhere } = require("sequelize");
 const Product = require("../models/Product");
+const { getReviewSummary } = require("./reviewController");
 const AppError = require("../utils/AppError");
+
+function attachReviewSummary(product, summaries) {
+  const data = product.toJSON();
+  data.reviewSummary = summaries.get(Number(data.id)) || { average: 0, count: 0 };
+  return data;
+}
 
 function parsePositiveInteger(value, fallback, fieldName, maximum = 100) {
   if (value === undefined || value === "") return fallback;
@@ -8,11 +15,7 @@ function parsePositiveInteger(value, fallback, fieldName, maximum = 100) {
   const number = Number(value);
 
   if (!Number.isInteger(number) || number < 1 || number > maximum) {
-    throw new AppError(
-      `${fieldName} deve ser um número inteiro entre 1 e ${maximum}.`,
-      400,
-      "INVALID_PARAMETER"
-    );
+    throw new AppError(`${fieldName} deve ser um número inteiro entre 1 e ${maximum}.`, 400, "INVALID_PARAMETER");
   }
 
   return number;
@@ -108,9 +111,11 @@ async function getProductById(req, res, next) {
       throw new AppError("Produto não encontrado.", 404, "PRODUCT_NOT_FOUND");
     }
 
+    const summaries = await getReviewSummary(product.id);
+
     return res.status(200).json({
       success: true,
-      data: product,
+      data: attachReviewSummary(product, summaries),
     });
   } catch (error) {
     return next(error);
@@ -181,11 +186,12 @@ async function searchProducts(req, res, next) {
       offset: (page - 1) * limit,
       order: getProductOrder(sort),
     });
+    const summaries = await getReviewSummary(result.rows.map((product) => product.id));
 
     return res.status(200).json({
       success: true,
       data: {
-        items: result.rows,
+        items: result.rows.map((product) => attachReviewSummary(product, summaries)),
         pagination: {
           page,
           limit,

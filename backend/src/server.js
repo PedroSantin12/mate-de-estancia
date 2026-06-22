@@ -3,6 +3,7 @@ require("dotenv").config();
 const app = require("./app");
 const sequelize = require("./config/database");
 const User = require("./models/User");
+require("./models/Review");
 const { hashPassword } = require("./services/authService");
 
 const PORT = Number(process.env.PORT || 3000);

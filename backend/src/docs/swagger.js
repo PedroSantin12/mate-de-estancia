@@ -43,6 +43,14 @@ const swaggerDocument = {
           featured: { type: "boolean", example: false },
         },
       },
+      ReviewInput: {
+        type: "object",
+        required: ["rating", "comment"],
+        properties: {
+          rating: { type: "integer", minimum: 1, maximum: 5, example: 5 },
+          comment: { type: "string", minLength: 5, maxLength: 500, example: "Produto excelente para o chimarrão do dia a dia." },
+        },
+      },
       AuthInput: {
         type: "object",
         required: ["email", "password"],
@@ -105,6 +113,22 @@ const swaggerDocument = {
         security: basicSecurity,
         parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
         responses: { 200: { description: "Produto removido" }, ...responses.unauthorized, ...responses.notFound },
+      },
+    },
+    "/product/{id}/reviews": {
+      get: {
+        tags: ["Produtos"],
+        summary: "Lista avaliações reais de um produto",
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+        responses: { 200: { description: "Avaliações retornadas" }, ...responses.notFound },
+      },
+      post: {
+        tags: ["Produtos"],
+        summary: "Publica ou atualiza a avaliação do usuário autenticado",
+        security: bearerSecurity,
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/ReviewInput" } } } },
+        responses: { 201: { description: "Avaliação publicada" }, 200: { description: "Avaliação atualizada" }, ...responses.validation, ...responses.unauthorized, ...responses.notFound },
       },
     },
     "/products": {

@@ -18,9 +18,14 @@ function formatCategory(category) {
 }
 
 function getProductRating(product) {
-  const rating = 4.4 + (Number(product.id) % 6) / 10;
-  const reviews = 18 + Number(product.id) * 3;
-  return { rating: Math.min(rating, 5).toFixed(1), reviews };
+  const summary = product.reviewSummary || {};
+  const average = Number(summary.average || 0);
+  const count = Number(summary.count || 0);
+
+  return {
+    rating: count ? average.toFixed(1) : "0.0",
+    reviews: count,
+  };
 }
 
 function getProductBadges(product) {
@@ -31,9 +36,22 @@ function getProductBadges(product) {
   return badges.length ? badges.slice(0, 2) : ["Feito para o mate"];
 }
 
+function renderStars(rating) {
+  const rounded = Math.round(Number(rating || 0));
+  return "★★★★★"
+    .split("")
+    .map((star, index) => `<span class="${index < rounded ? "star-filled" : "star-empty"}">${star}</span>`)
+    .join("");
+}
+
 function renderRating(product) {
   const { rating, reviews } = getProductRating(product);
-  return `<div class="product-rating" aria-label="Avaliação média ${rating} de 5"><span>★★★★★</span><strong>${rating}</strong><small>(${reviews})</small></div>`;
+
+  if (!reviews) {
+    return `<div class="product-rating product-rating-empty">Ainda sem avaliações</div>`;
+  }
+
+  return `<div class="product-rating" aria-label="Avaliação média ${rating} de 5"><span>${renderStars(rating)}</span><strong>${rating}</strong><small>(${reviews})</small></div>`;
 }
 
 function renderFavoriteButton(product) {
@@ -76,6 +94,7 @@ window.formatPrice = formatPrice;
 window.formatCategory = formatCategory;
 window.getProductRating = getProductRating;
 window.getProductBadges = getProductBadges;
+window.renderStars = renderStars;
 window.renderRating = renderRating;
 window.renderFavoriteButton = renderFavoriteButton;
 window.renderProductCard = renderProductCard;
