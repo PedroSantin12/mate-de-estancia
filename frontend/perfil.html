@@ -30,9 +30,21 @@
           <div class="section-heading"><div><p class="account-label">Hist&oacute;rico</p><h2>Compras passadas</h2></div></div>
           <div class="order-history" id="order-history"><p>Carregando pedidos...</p></div>
         </article>
+        <article class="checkout-card" id="rastreamento">
+          <div class="section-heading"><div><p class="account-label">Acompanhamento</p><h2>Rastreamento do pedido</h2></div></div>
+          <form class="tracking-form profile-tracking-form" id="tracking-form">
+            <label>N&uacute;mero do pedido<input class="field" name="orderNumber" placeholder="ME123456789" required></label>
+            <label>E-mail da compra<input class="field" name="email" type="email" placeholder="cliente@email.com" required></label>
+            <button class="button button-brown" type="submit">Consultar pedido</button>
+            <p class="status-message" id="tracking-feedback"></p>
+          </form>
+          <article class="tracking-result profile-tracking-result" id="tracking-result">
+            <p class="status-message">Escolha um pedido no hist&oacute;rico ou informe o n&uacute;mero para acompanhar.</p>
+          </article>
+        </article>
       </div>
     </section>
   </main>
-  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/components.js"></script><script src="/js/cartStorage.js"></script><script src="/js/perfil.js"></script>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/components.js"></script><script src="/js/cartStorage.js"></script><script src="/js/perfil.js"></script><script src="/js/rastreamento.js"></script>
 </body>
 </html>

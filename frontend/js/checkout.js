@@ -131,7 +131,7 @@ async function finishOrder(event) {
       <p>Seu pedido <strong>${order.orderNumber}</strong> foi criado com sucesso.</p>
       <p>Entrega estimada em ${order.delivery.deliveryDays.min} a ${order.delivery.deliveryDays.max} dias úteis.</p>
       <div class="price">${formatPrice(order.summary.total)}</div>
-      <a class="button" href="/rastreamento?order=${encodeURIComponent(order.orderNumber)}&email=${encodeURIComponent(order.customer.email)}">Rastrear pedido</a>
+      <a class="button" href="/perfil?order=${encodeURIComponent(order.orderNumber)}&email=${encodeURIComponent(order.customer.email)}#rastreamento">Rastrear pedido</a>
       <a class="button button-brown" href="/">Voltar para a loja</a>
     `;
     successCard.querySelector("a").focus();

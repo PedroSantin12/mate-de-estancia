@@ -1210,6 +1210,15 @@ button {
   gap: 16px;
 }
 
+.profile-tracking-form {
+  margin-bottom: 18px;
+}
+
+.profile-tracking-result {
+  border-top: 1px solid var(--cream-200);
+  padding-top: 18px;
+}
+
 .tracking-head {
   display: flex;
   justify-content: space-between;

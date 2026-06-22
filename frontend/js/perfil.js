@@ -29,6 +29,6 @@ function renderOrders(orders) {
   container.innerHTML = orders.map((order) => {
     const itemCount = order.summary.items.reduce((total, item) => total + Number(item.qty), 0);
     const date = new Date(order.createdAt).toLocaleDateString("pt-BR");
-    return `<article class="order-row"><div><span class="order-number">${order.orderNumber}</span><small>${date} &middot; ${itemCount} item(ns)</small></div><span class="order-status">${order.status}</span><strong>${formatPrice(order.summary.total)}</strong><a class="icon-button" href="/rastreamento?order=${encodeURIComponent(order.orderNumber)}&email=${encodeURIComponent(order.customer?.email || getAuthUser().email)}">Rastrear</a></article>`;
+    return `<article class="order-row"><div><span class="order-number">${order.orderNumber}</span><small>${date} &middot; ${itemCount} item(ns)</small></div><span class="order-status">${order.status}</span><strong>${formatPrice(order.summary.total)}</strong><a class="icon-button" href="/perfil?order=${encodeURIComponent(order.orderNumber)}&email=${encodeURIComponent(order.customer?.email || getAuthUser().email)}#rastreamento">Rastrear</a></article>`;
   }).join("");
 }

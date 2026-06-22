@@ -4,10 +4,13 @@ document.addEventListener("DOMContentLoaded", initializeTracking);
 
 function initializeTracking() {
   const form = document.querySelector("#tracking-form");
+  if (!form) return;
+
   const params = new URLSearchParams(window.location.search);
+  const user = typeof getAuthUser === "function" ? getAuthUser() : null;
 
   form.orderNumber.value = params.get("order") || "";
-  form.email.value = params.get("email") || "";
+  form.email.value = params.get("email") || user?.email || "";
   form.addEventListener("submit", trackOrder);
 
   if (form.orderNumber.value && form.email.value) {
