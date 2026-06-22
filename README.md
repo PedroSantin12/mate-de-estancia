@@ -12,6 +12,8 @@ administradores.
 - Carrinho local para visitantes e persistido para usuários autenticados.
 - Cadastro e login com senha protegida por `scrypt` e autenticação JWT.
 - Cálculo de frete por CEP e finalização de compra.
+- Área "Monte seu kit" com recomendação guiada de produtos.
+- Rastreamento de pedido por número e e-mail do comprador.
 - Perfil do cliente com carrinho salvo e histórico de pedidos.
 - Painel administrativo para cadastrar, editar e excluir produtos.
 - Painel de vendas com dados do comprador, entrega, itens e faturamento.
@@ -89,6 +91,7 @@ Acesse:
 | POST | `/cart` | Recalcula os valores do carrinho |
 | POST | `/shipping` | Consulta CEP e calcula frete |
 | POST | `/checkout` | Finaliza e persiste um pedido |
+| POST | `/order-tracking` | Consulta o rastreamento de um pedido |
 | POST | `/auth/register` | Cadastra um cliente |
 | POST | `/auth/login` | Autentica cliente ou administrador |
 | GET/PUT | `/user/cart` | Consulta ou persiste o carrinho |

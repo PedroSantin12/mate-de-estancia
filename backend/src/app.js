@@ -50,6 +50,14 @@ app.get("/sobre", (_req, res) => {
   res.sendFile(path.join(frontendPath, "sobre.html"));
 });
 
+app.get("/monte-seu-kit", (_req, res) => {
+  res.sendFile(path.join(frontendPath, "monte-kit.html"));
+});
+
+app.get("/rastreamento", (_req, res) => {
+  res.sendFile(path.join(frontendPath, "rastreamento.html"));
+});
+
 app.get("/checkout", (_req, res) => {
   res.sendFile(path.join(frontendPath, "checkout.html"));
 });

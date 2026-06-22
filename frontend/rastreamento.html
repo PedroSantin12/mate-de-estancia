@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sobre | Mate de Estância</title>
+  <title>Rastreamento | Mate de Estância</title>
   <link rel="icon" href="/assets/images/logo-mate-estancia-emblema-transparente.png" type="image/png">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -18,14 +18,28 @@
     <ul class="category-list"><li><a href="/">Início</a></li><li><a href="/busca?cat=ervas">Erva-mate</a></li><li><a href="/busca?cat=cuias">Cuias</a></li><li><a href="/busca?cat=bombas">Bombas</a></li><li><a href="/busca?cat=termicas">Térmicas</a></li><li><a href="/busca?cat=kits">Kits personalizados</a></li><li><a href="/monte-seu-kit">Monte seu kit</a></li><li><a href="/rastreamento">Rastreamento</a></li><li><a href="/favoritos">Favoritos</a></li><li><a href="/sobre">Sobre</a></li></ul>
   </nav>
 </header>
-<main>
-  <section class="about-hero"><div class="container about-hero-card"><p class="eyebrow">Nossa proposta</p><h1>Uma loja gaúcha pensada para quem valoriza o ritual do mate.</h1><p>A Mate de Estância é uma simulação de e-commerce criada para demonstrar uma aplicação web completa, com front-end, API REST, autenticação, carrinho, checkout e painel administrativo.</p></div></section>
-  <section class="container about-grid">
-    <article class="checkout-card"><h2>Tradição</h2><p>O catálogo valoriza produtos ligados ao chimarrão: ervas, cuias, bombas, térmicas e kits para diferentes estilos de mate.</p></article>
-    <article class="checkout-card"><h2>Tecnologia</h2><p>A loja usa HTML, CSS e JavaScript no front-end, enquanto o back-end em Node.js expõe rotas REST documentadas com Swagger/OpenAPI.</p></article>
-    <article class="checkout-card"><h2>Experiência</h2><p>O cliente pode navegar livremente, salvar carrinho, calcular frete por CEP e finalizar pedidos após autenticação.</p></article>
+
+<main class="container tracking-page">
+  <section class="page-heading">
+    <p class="eyebrow">Acompanhe sua compra</p>
+    <h1>Rastreamento do pedido</h1>
+    <p>Informe o número do pedido e o e-mail usado na compra para acompanhar o andamento.</p>
+  </section>
+
+  <section class="tracking-grid">
+    <form class="checkout-card tracking-form" id="tracking-form">
+      <label>Número do pedido<input class="field" name="orderNumber" placeholder="ME123456789" required></label>
+      <label>E-mail da compra<input class="field" name="email" type="email" placeholder="cliente@email.com" required></label>
+      <button class="button button-brown" type="submit">Consultar pedido</button>
+      <p class="status-message" id="tracking-feedback"></p>
+    </form>
+
+    <article class="checkout-card tracking-result" id="tracking-result">
+      <p class="status-message">O andamento do pedido aparecerá aqui.</p>
+    </article>
   </section>
 </main>
+
 <footer class="site-footer">
   <div class="container footer-grid">
     <div><strong>Mate de Estância</strong><p>Tradição gaúcha em cada mate, com produtos selecionados para o seu chimarrão.</p></div>
@@ -35,9 +49,11 @@
   </div>
   <div class="container footer-bottom">Projeto acadêmico de Programação Web. Nenhuma compra real é processada.</div>
 </footer>
-<script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cartStorage.js"></script>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/cartStorage.js"></script>
+<script src="/js/components.js"></script>
+<script src="/js/rastreamento.js"></script>
 </body>
 </html>
-
-
-

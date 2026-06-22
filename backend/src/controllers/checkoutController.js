@@ -88,4 +88,38 @@ async function finishCheckout(req, res, next) {
   }
 }
 
-module.exports = { calculateShippingQuote, finishCheckout };
+async function trackOrder(req, res, next) {
+  try {
+    const orderNumber = String(req.body.orderNumber || "").trim().toUpperCase();
+    const email = String(req.body.email || "").trim().toLowerCase();
+
+    if (!orderNumber || !email) {
+      throw new AppError("Informe o número do pedido e o e-mail usado na compra.", 400, "VALIDATION_ERROR");
+    }
+
+    const order = await Order.findOne({ where: { orderNumber } });
+    const orderEmail = String(order?.customer?.email || "").toLowerCase();
+
+    if (!order || orderEmail !== email) {
+      throw new AppError("Pedido não encontrado para os dados informados.", 404, "ORDER_NOT_FOUND");
+    }
+
+    return res.json({
+      success: true,
+      data: {
+        orderNumber: order.orderNumber,
+        status: order.status,
+        customer: order.customer,
+        paymentMethod: order.paymentMethod,
+        summary: order.summary,
+        delivery: order.delivery,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+module.exports = { calculateShippingQuote, finishCheckout, trackOrder };

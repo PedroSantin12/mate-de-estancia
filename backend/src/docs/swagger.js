@@ -76,6 +76,14 @@ const swaggerDocument = {
           couponCode: { type: "string", example: "URI10" },
         },
       },
+      TrackingInput: {
+        type: "object",
+        required: ["orderNumber", "email"],
+        properties: {
+          orderNumber: { type: "string", example: "ME123456789" },
+          email: { type: "string", format: "email", example: "cliente@email.com" },
+        },
+      },
     },
   },
   paths: {
@@ -165,6 +173,14 @@ const swaggerDocument = {
         summary: "Finaliza e persiste um pedido",
         security: bearerSecurity,
         responses: { 201: { description: "Pedido confirmado" }, ...responses.validation, ...responses.unauthorized },
+      },
+    },
+    "/order-tracking": {
+      post: {
+        tags: ["Carrinho e compra"],
+        summary: "Consulta o rastreamento de um pedido por número e e-mail",
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/TrackingInput" } } } },
+        responses: { 200: { description: "Pedido encontrado" }, ...responses.validation, ...responses.notFound },
       },
     },
     "/auth/register": {
