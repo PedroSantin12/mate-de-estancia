@@ -42,6 +42,10 @@ app.get("/carrinho", (_req, res) => {
   res.sendFile(path.join(frontendPath, "carrinho.html"));
 });
 
+app.get("/sobre", (_req, res) => {
+  res.sendFile(path.join(frontendPath, "sobre.html"));
+});
+
 app.get("/checkout", (_req, res) => {
   res.sendFile(path.join(frontendPath, "checkout.html"));
 });

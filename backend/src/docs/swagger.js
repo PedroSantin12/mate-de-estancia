@@ -85,6 +85,7 @@ const swaggerDocument = {
         parameters: [
           { name: "query", in: "query", schema: { type: "string" } },
           { name: "cat", in: "query", schema: { type: "string" } },
+          { name: "sort", in: "query", schema: { type: "string", enum: ["price_asc", "price_desc", "name_asc"] } },
           { name: "page", in: "query", schema: { type: "integer", minimum: 1 } },
           { name: "limit", in: "query", schema: { type: "integer", minimum: 1, maximum: 50 } },
         ],
@@ -209,6 +210,27 @@ const swaggerDocument = {
         summary: "Lista vendas e dados dos compradores",
         security: bearerSecurity,
         responses: { 200: { description: "Vendas retornadas" }, ...responses.unauthorized, ...responses.forbidden },
+      },
+    },
+    "/admin-api/order/{id}/status": {
+      patch: {
+        tags: ["Administração"],
+        summary: "Atualiza o status de um pedido",
+        security: bearerSecurity,
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["status"],
+                properties: { status: { type: "string", enum: ["Pedido confirmado", "Em preparo", "Enviado", "Entregue", "Cancelado"] } },
+              },
+            },
+          },
+        },
+        responses: { 200: { description: "Status atualizado" }, ...responses.validation, ...responses.unauthorized, ...responses.forbidden, ...responses.notFound },
       },
     },
     "/admin-api/products": {

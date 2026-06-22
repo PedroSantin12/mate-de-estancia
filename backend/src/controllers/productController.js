@@ -36,6 +36,19 @@ function validateProductBody(body) {
   }
 }
 
+function getProductOrder(sort) {
+  const options = {
+    price_asc: [["price", "ASC"]],
+    price_desc: [["price", "DESC"]],
+    name_asc: [["name", "ASC"]],
+  };
+
+  return options[sort] || [
+    ["featured", "DESC"],
+    ["id", "ASC"],
+  ];
+}
+
 async function createProduct(req, res, next) {
   try {
     validateProductBody(req.body);
@@ -132,6 +145,7 @@ async function searchProducts(req, res, next) {
     const limit = parsePositiveInteger(req.query.limit, 12, "limit", 50);
     const query = String(req.query.query || "").trim();
     const category = String(req.query.cat || "").trim().toLowerCase();
+    const sort = String(req.query.sort || "").trim();
 
     if (query.length > 100) {
       throw new AppError("A pesquisa deve possuir até 100 caracteres.", 400, "INVALID_PARAMETER");
@@ -165,10 +179,7 @@ async function searchProducts(req, res, next) {
       where: conditions.length ? { [Op.and]: conditions } : {},
       limit,
       offset: (page - 1) * limit,
-      order: [
-        ["featured", "DESC"],
-        ["id", "ASC"],
-      ],
+      order: getProductOrder(sort),
     });
 
     return res.status(200).json({

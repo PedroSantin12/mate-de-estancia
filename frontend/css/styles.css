@@ -555,9 +555,39 @@ button {
   color: var(--muted);
 }
 
+.about-hero {
+  padding: 72px 0;
+  background:
+    linear-gradient(90deg, rgba(16, 38, 24, 0.88), rgba(16, 38, 24, 0.56)),
+    url("/assets/images/banner-estancia-v2.jpg") center / cover;
+  color: var(--white);
+}
+
+.about-hero-card {
+  max-width: 760px;
+}
+
+.about-hero h1 {
+  margin: 0 0 16px;
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  line-height: 1.05;
+}
+
+.about-hero p {
+  max-width: 650px;
+  font-size: 1.05rem;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  padding: 54px 0 72px;
+}
+
 .search-toolbar {
   display: grid;
-  grid-template-columns: 1fr 220px auto;
+  grid-template-columns: 1fr 200px 180px auto;
   gap: 12px;
   margin-bottom: 24px;
 }
@@ -1136,6 +1166,13 @@ button {
   font-weight: 800;
 }
 
+.status-save-feedback {
+  min-height: 18px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
 .empty-orders {
   border-top: 1px solid var(--cream-200);
   padding-top: 20px;
@@ -1343,9 +1380,49 @@ button {
 }
 
 .site-footer {
-  padding: 28px 0;
+  padding: 40px 0 18px;
   background: var(--green-900);
   color: var(--cream-200);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.35fr repeat(3, 1fr);
+  gap: 26px;
+}
+
+.site-footer strong {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--white);
+}
+
+.site-footer p {
+  margin: 0;
+  color: rgba(238, 230, 215, 0.82);
+  font-size: 0.9rem;
+}
+
+.site-footer nav {
+  display: grid;
+  gap: 7px;
+}
+
+.site-footer a {
+  color: rgba(238, 230, 215, 0.82);
+  font-size: 0.9rem;
+}
+
+.site-footer a:hover {
+  color: var(--white);
+}
+
+.footer-bottom {
+  margin-top: 28px;
+  border-top: 1px solid rgba(238, 230, 215, 0.18);
+  padding-top: 16px;
+  color: rgba(238, 230, 215, 0.7);
+  font-size: 0.82rem;
   text-align: center;
 }
 
@@ -1367,6 +1444,11 @@ button {
   }
 
   .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-grid,
+  .footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1458,6 +1540,15 @@ button {
     padding-inline: 16px;
   }
 
+  .about-hero {
+    padding: 48px 0;
+  }
+
+  .about-grid,
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
   .benefits {
     margin-top: 16px;
   }
@@ -1484,6 +1575,17 @@ button {
   .product-detail,
   .search-toolbar {
     grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .product-card-footer,
+  .admin-row-actions {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .form-grid {

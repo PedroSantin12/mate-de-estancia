@@ -2,9 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const query = params.get("query") || "";
   const category = params.get("cat") || "";
+  const sort = params.get("sort") || "";
 
   document.querySelector("#query").value = query;
   document.querySelector("#category").value = category;
+  document.querySelector("#sort").value = sort;
 
   loadProducts();
 });
@@ -14,10 +16,12 @@ document.querySelector("#filter-form").addEventListener("submit", (event) => {
 
   const query = document.querySelector("#query").value.trim();
   const category = document.querySelector("#category").value;
+  const sort = document.querySelector("#sort").value;
   const params = new URLSearchParams();
 
   if (query) params.set("query", query);
   if (category) params.set("cat", category);
+  if (sort) params.set("sort", sort);
 
   window.location.href = `/busca?${params.toString()}`;
 });

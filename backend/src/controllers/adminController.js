@@ -4,6 +4,8 @@ const Order = require("../models/Order");
 const AppError = require("../utils/AppError");
 const { publicUser } = require("./authController");
 
+const ORDER_STATUSES = ["Pedido confirmado", "Em preparo", "Enviado", "Entregue", "Cancelado"];
+
 async function dashboard(_req, res, next) {
   try {
     const [users, products, lowStock] = await Promise.all([
@@ -46,4 +48,18 @@ async function removeProduct(req, res, next) {
   } catch (error) { return next(error); }
 }
 
-module.exports = { dashboard, listUsers, listOrders, removeProduct };
+async function updateOrderStatus(req, res, next) {
+  try {
+    const status = String(req.body.status || "").trim();
+    if (!ORDER_STATUSES.includes(status)) {
+      throw new AppError("Status de pedido inválido.", 400, "VALIDATION_ERROR");
+    }
+    const order = await Order.findByPk(req.params.id);
+    if (!order) throw new AppError("Pedido não encontrado.", 404, "ORDER_NOT_FOUND");
+    order.status = status;
+    await order.save();
+    return res.json({ success: true, data: order });
+  } catch (error) { return next(error); }
+}
+
+module.exports = { dashboard, listUsers, listOrders, updateOrderStatus, removeProduct };
