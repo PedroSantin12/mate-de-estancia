@@ -1355,9 +1355,29 @@ button {
   padding-top: 20px;
 }
 
+.admin-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.admin-sidebar {
+  position: sticky;
+  top: 18px;
+  border-radius: var(--radius);
+  padding: 14px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.admin-main {
+  min-width: 0;
+}
+
 .admin-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -1384,23 +1404,28 @@ button {
 }
 
 .admin-tabs {
-  display: flex;
+  display: grid;
   gap: 8px;
-  margin-bottom: 28px;
-  border-bottom: 1px solid var(--cream-200);
 }
 
 .admin-tab {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
   border: 0;
-  border-bottom: 3px solid transparent;
-  padding: 12px 16px;
-  background: transparent;
+  border-left: 4px solid transparent;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--cream-100);
   color: var(--muted);
   font-weight: 800;
+  text-align: left;
 }
 
 .admin-tab.active {
-  border-bottom-color: var(--green-700);
+  border-left-color: var(--green-700);
+  background: #e6f2e9;
   color: var(--green-900);
 }
 
@@ -1414,8 +1439,67 @@ button {
 
 #admin-sales-panel[hidden],
 #admin-reviews-panel[hidden],
+#admin-stock-panel[hidden],
+#admin-dashboard-panel[hidden],
 #admin-catalog-panel[hidden] {
   display: none;
+}
+
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.admin-chart {
+  display: grid;
+  gap: 12px;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 2fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.chart-row span {
+  overflow: hidden;
+  color: var(--green-900);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-row div {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--cream-200);
+}
+
+.chart-row i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--green-700), var(--brown-700));
+}
+
+.chart-row strong {
+  color: var(--brown-700);
+}
+
+.admin-checkbox-field {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 44px;
+  border: 1px solid var(--cream-300);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--white);
+  font-weight: 700;
 }
 
 .admin-table-wrap {
@@ -1463,6 +1547,36 @@ button {
 .admin-reviews-list {
   display: grid;
   gap: 14px;
+}
+
+.admin-stock-list {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-stock-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 14px;
+  align-items: center;
+  border-radius: 16px;
+  padding: 16px 18px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.admin-stock-card.stock-low {
+  border-left: 5px solid var(--danger);
+}
+
+.admin-stock-card div {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-stock-card span {
+  color: var(--muted);
+  font-size: 0.86rem;
 }
 
 .admin-review-card {
@@ -1721,6 +1835,16 @@ button {
 
   .admin-stats {
     grid-template-columns: 1fr;
+  }
+
+  .admin-layout,
+  .admin-dashboard-grid,
+  .admin-stock-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    position: static;
   }
 
   .sale-details {

@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const User = require("../models/User");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
@@ -7,14 +8,62 @@ const { publicUser } = require("./authController");
 
 const ORDER_STATUSES = ["Pedido confirmado", "Em preparo", "Enviado", "Entregue", "Cancelado"];
 
+function calculateSalesMetrics(orders) {
+  const statusCounts = Object.fromEntries(ORDER_STATUSES.map((status) => [status, 0]));
+  const productSales = new Map();
+  let revenue = 0;
+  let soldItems = 0;
+
+  orders.forEach((order) => {
+    statusCounts[order.status] = (statusCounts[order.status] || 0) + 1;
+    revenue += Number(order.summary?.total || 0);
+
+    const items = Array.isArray(order.summary?.items) ? order.summary.items : [];
+    items.forEach((item) => {
+      soldItems += Number(item.qty || 0);
+      const productId = Number(item.productId);
+      const current = productSales.get(productId) || { productId, name: item.name, qty: 0, revenue: 0 };
+      current.qty += Number(item.qty || 0);
+      current.revenue += Number(item.lineSubtotal || 0);
+      productSales.set(productId, current);
+    });
+  });
+
+  return {
+    revenue,
+    soldItems,
+    averageTicket: orders.length ? revenue / orders.length : 0,
+    statusCounts,
+    topProducts: [...productSales.values()].sort((a, b) => b.qty - a.qty).slice(0, 5),
+  };
+}
+
 async function dashboard(_req, res, next) {
   try {
-    const [users, products, lowStock] = await Promise.all([
+    const [users, products, lowStock, orders, reviews, favoriteUsers] = await Promise.all([
       User.count({ where: { role: "customer" } }),
       Product.count(),
-      Product.count({ where: { stock: { [require("sequelize").Op.lte]: 15 } } }),
+      Product.count({ where: { stock: { [Op.lte]: 15 } } }),
+      Order.findAll(),
+      Review.count(),
+      User.findAll({ attributes: ["favorites"] }),
     ]);
-    return res.json({ success: true, data: { users, products, lowStock } });
+
+    const sales = calculateSalesMetrics(orders);
+    const favorites = favoriteUsers.reduce((total, user) => total + (Array.isArray(user.favorites) ? user.favorites.length : 0), 0);
+
+    return res.json({
+      success: true,
+      data: {
+        users,
+        products,
+        lowStock,
+        orders: orders.length,
+        reviews,
+        favorites,
+        ...sales,
+      },
+    });
   } catch (error) { return next(error); }
 }
 
