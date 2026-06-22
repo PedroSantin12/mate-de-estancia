@@ -9,13 +9,50 @@ async function loadProfile() {
   document.querySelector("#profile-full-name").textContent = user.name;
   document.querySelector("#profile-email").textContent = user.email;
   document.querySelector("#account-avatar").textContent = user.name.charAt(0).toUpperCase();
-  document.querySelector("#saved-cart-count").textContent = getCartItems().reduce((total, item) => total + Number(item.qty), 0);
   document.querySelector("#logout-button").addEventListener("click", logout);
+  await renderSavedCart();
 
   try {
     renderOrders(await apiRequest("/user/orders"));
   } catch (error) {
     document.querySelector("#order-history").innerHTML = `<p class="status-message error-message">${error.message}</p>`;
+  }
+}
+
+async function renderSavedCart() {
+  const items = getCartItems();
+  const totalItems = items.reduce((total, item) => total + Number(item.qty), 0);
+  const container = document.querySelector("#profile-cart-preview");
+  document.querySelector("#saved-cart-count").textContent = totalItems;
+
+  if (!items.length) {
+    container.innerHTML = `<p class="status-message">Seu carrinho está vazio.</p>`;
+    return;
+  }
+
+  try {
+    const summary = await apiRequest("/cart", {
+      method: "POST",
+      body: JSON.stringify({ items }),
+    });
+
+    container.innerHTML = `
+      <div class="profile-cart-items">
+        ${summary.items.map((item) => `
+          <article class="profile-cart-item">
+            <img src="${item.image}" alt="${item.name}">
+            <div>
+              <h3>${item.name}</h3>
+              <p>${item.variantLabel || "Produto sem variação"} · ${item.qty} un.</p>
+            </div>
+            <strong>${formatPrice(item.lineSubtotal)}</strong>
+          </article>
+        `).join("")}
+      </div>
+      <div class="summary-line summary-total profile-cart-total"><span>Total do carrinho</span><strong>${formatPrice(summary.total)}</strong></div>
+    `;
+  } catch (error) {
+    container.innerHTML = `<p class="status-message error-message">${error.message}</p>`;
   }
 }
 
