@@ -113,6 +113,9 @@ function renderKit(answers) {
 }
 
 function addCurrentKitToCart() {
-  currentKit.forEach((product) => addCartItem({ productId: product.id, qty: 1 }));
+  currentKit.forEach((product) => {
+    const variants = Array.isArray(product.variants) ? product.variants : [];
+    addCartItem({ productId: product.id, variantId: variants[0]?.id || null, qty: 1 });
+  });
   document.querySelector("#kit-feedback").innerHTML = `Kit adicionado ao carrinho. <a href="/carrinho">Abrir carrinho</a>`;
 }

@@ -12,6 +12,10 @@ function findVariant(product, variantId) {
     return null;
   }
 
+  if (!variantId) {
+    return variants[0];
+  }
+
   const selectedVariant = variants.find((variant) => String(variant.id) === String(variantId));
 
   if (!selectedVariant) {
